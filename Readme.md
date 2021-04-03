@@ -1,4 +1,4 @@
-# O que é essa repositório?
+# O que é esse repositório?
 
 Aqui ficam os arquivos terraform para o deploy de toda a plataforma de APIs. Será feito todo o deploy no K8S deixando a API pronta para uso.
 
