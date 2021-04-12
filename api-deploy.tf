@@ -36,6 +36,7 @@ resource "kubernetes_deployment" "netflix-product-details" {
         container {
           image = "igoroschsimoes/6dvp-microservices:product_details-0.0.1-SNAPSHOT"
           name  = "dvp6-netflix-product-details-container"
+          image_pull_policy = "Always"
           port {
             container_port = 8083
           }
@@ -99,6 +100,7 @@ resource "kubernetes_deployment" "netflix-auth-db" {
         container {
           image = "igoroschsimoes/6dvp-microservices:auth-db-1.0.0"
           name  = "dvp6-netflix-auth-db"
+          image_pull_policy = "Always"
           port {
             container_port = 3306
           }
@@ -129,6 +131,7 @@ resource "kubernetes_deployment" "netflix-auth-db-client" {
         container {
           image = "mysql:8.0.23"
           name  = "dvp6-netflix-auth-db-client"
+          image_pull_policy = "Always"
           env{
             name= "MYSQL_ROOT_PASSWORD" 
             value = "123456789"
@@ -168,6 +171,7 @@ resource "kubernetes_deployment" "netflix-auth" {
         container {
           image = "igoroschsimoes/6dvp-microservices:auth-1.0.0"
           name  = "dvp6-netflix-auth"
+          image_pull_policy = "Always"
           env {
             name  = "DB_SERVER"
             value = kubernetes_service.netflix-auth-db.spec.0.cluster_ip
