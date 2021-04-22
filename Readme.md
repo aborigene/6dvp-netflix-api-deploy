@@ -9,13 +9,14 @@ Nesse momento somente os serviços abaixo estão configurados:
 product-details
 auth
 auth-db
+user-details
 
 ## Como usar esse repositório
 
 1. Executar os comandos terraform, como abaixo
 
 ```
-cd product-details
+cd <raiz_repositorio>
 terraform init
 terraform plan
 terraform apply --auto-aprove
@@ -32,11 +33,8 @@ Os arquivos estão configurados para baixar as imagens do repoistório projeto n
 3. Para acessar os serviços é necessária a configuração de LoadBalancers, Port Forwarding ou Tunnel. Por favor verificar a documentação do ambiente onde está sendo feito o deploy, para a melhor opção a ser usada.
 4. Por exemplo, no caso do Minikube e o serviço product-details basta executar o comando abaixo, que irá garantir o acesso ao serviço através da porta local 8080. Caso esta porta já esteja em uso, ajustar o comando para uma porta que esteja disponível.
 5. Necessário terraform instalado localmente para execução do deploy.
+6. Para acessar os serviços será necessário fazer o port forward se estiver sendo usado o minikube, exemplo de comando abaixo.
 
 ```
 kubectl port-forward service/dvp6-netflix-product-details 8080:8083 -n dvp6-netflix-product-details
 ```
-
-## TODO:
-
-Automação geral desse processo e extensão aos demais serviços.

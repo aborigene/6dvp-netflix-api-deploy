@@ -169,12 +169,16 @@ resource "kubernetes_deployment" "netflix-auth" {
       }
       spec {
         container {
-          image = "igoroschsimoes/6dvp-microservices:auth-1.0.0"
+          image = "igoroschsimoes/6dvp-microservices:auth-0.0.2-SNAPSHOT"
           name  = "dvp6-netflix-auth"
           image_pull_policy = "Always"
           env {
             name  = "DB_SERVER"
             value = kubernetes_service.netflix-auth-db.spec.0.cluster_ip
+          }
+          env {
+            name  = "QQCOISA"
+            value = "TaTT"
           }
           env {
             name  = "DB_PORT"
@@ -209,6 +213,53 @@ resource "kubernetes_service" "netflix-auth" {
     port {
       port        = 8090
       target_port = 8090
+    }
+  }
+}
+resource "kubernetes_deployment" "netflix-service-discovery" {
+  metadata {
+    name      = "dvp6-netflix-service-discovery"
+    namespace = kubernetes_namespace.dvp6-netflix.metadata.0.name
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "dvp6-netflix-service-discovery"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "dvp6-netflix-service-discovery"
+        }
+      }
+      spec {
+        container {
+          image = "igoroschsimoes/6dvp-microservices:service_discovery-0.0.1-SNAPSHOT"
+          name  = "dvp6-netflix-service-discovery"
+          image_pull_policy = "Always"
+          port {
+            container_port = 8761
+          }
+        }
+      }
+    }
+  }
+}
+resource "kubernetes_service" "netflix-service-discovery" {
+  metadata {
+    name      = "dvp6-netflix-service-discovery"
+    namespace = kubernetes_namespace.dvp6-netflix.metadata.0.name
+  }
+  spec {
+    selector = {
+      app = kubernetes_deployment.netflix-service-discovery.spec.0.template.0.metadata.0.labels.app
+    }
+    type = "NodePort"
+    port {
+      port        = 8761
+      target_port = 8761
     }
   }
 }
