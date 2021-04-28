@@ -3,8 +3,8 @@ services:
 
 ###################### API Gateway #####################
     # Banco de dados do API Gateway
-    kong-db:
-        container_name: kong-db
+    api-gateway-db:
+        container_name: api-gateway-db
         image: postgres:9.6
         environment:
             POSTGRES_USER: kong
@@ -16,28 +16,28 @@ services:
             - backend
 
     # Preparando o banco de dados para receber a instancia do Kong
-    kong-migrations-bootstrap:
-        container_name: kong-migrations-bootstrap
+    ms-de-apoio-prepare-api-install:
+        container_name: ms-de-apoio-prepare-api-install
         image: kong:latest
         command: "kong migrations bootstrap"
         environment:
             KONG_DATABASE: postgres
-            KONG_PG_HOST: kong-db
+            KONG_PG_HOST: api-gateway-db
             KONG_PG_USER: kong
             KONG_PG_PASSWORD: kong
         networks:
             - backend
         restart: on-failure
         depends_on:
-            - kong-db
+            - api-gateway-db
 
     # API Gateway
-    kong:
-        container_name: kong
+    api-gateway:
+        container_name: api-gateway
         image: kong:latest
         environment:
             KONG_DATABASE: postgres
-            KONG_PG_HOST: kong-db
+            KONG_PG_HOST: api-gateway-db
             KONG_PG_USER: kong
             KONG_PG_PASSWORD: kong
             KONG_PROXY_ACCESS_LOG: /dev/stdout
@@ -54,16 +54,16 @@ services:
             - backend
         restart: on-failure
         depends_on:
-            - kong-migrations-bootstrap
+            - ms-de-apoio-prepare-api-install
 
     # API Gateway UI
-    konga:
-        container_name: konga
+    api-gateway-ui:
+        container_name: api-gateway-ui
         image: pantsel/konga
         environment:
             TOKEN_SECRET: kong
             DB_ADAPTER: postgres
-            DB_HOST: kong-db
+            DB_HOST: api-gateway-db
             DB_PORT: 5432
             DB_USER: kong
             DB_PASSWORD: kong
@@ -76,17 +76,17 @@ services:
             - backend
         restart: always
 
-    # CLI  API Gateway
-    kong-restore:
-        container_name: kong-restore
+    # CLI API Gateway
+    ms-de-apoio-restore-api-db:
+        container_name: ms-de-apoio-restore-api-db
         image: kong/deck
         networks:
             - backend
-        command: "sync -s /tmp/kong.yaml --kong-addr http://kong:8001"
+        command: "sync -s /tmp/kong.yaml --kong-addr http://api-gateway:8001"
         volumes:
             - ./data/kong-db:/tmp    
         depends_on: 
-            - kong
+            - api-gateway
         restart: on-failure
 
 ########################################################
@@ -148,8 +148,8 @@ services:
             - backend
 
     # Bando de dados de apoio para restaurar os dados.
-    restore-db:
-        container_name: restore-db
+    ms-de-apoio-restore-db:
+        container_name: ms-de-apoio-restore-db
         image: mysql:8.0.23
         cap_add:
             - SYS_NICE 
@@ -190,7 +190,7 @@ services:
             - backend
         depends_on: 
             - auth-db
-            - restore-db
+            - ms-de-apoio-restore-db
         restart: on-failure
 
     # Micro-serviço de suporte
@@ -214,7 +214,7 @@ services:
             - backend
         depends_on: 
             - support-db
-            - restore-db
+            - ms-de-apoio-restore-db
             - rabbitmq
         restart: on-failure
 
@@ -239,7 +239,7 @@ services:
             - backend
         depends_on:
             - product-details-db
-            - restore-db
+            - ms-de-apoio-restore-db
             - rabbitmq
         restart: on-failure
  
