@@ -1,0 +1,251 @@
+version: "3.9"
+services:
+
+###################### API Gateway #####################
+    # Banco de dados do API Gateway
+    kong-db:
+        container_name: kong-db
+        image: postgres:9.6
+        environment:
+            POSTGRES_USER: kong
+            POSTGRES_PASSWORD: kong
+            POSTGRES_DB: kong
+        ports:
+            - "5432:5432"
+        networks:
+            - backend
+
+    # Preparando o banco de dados para receber a instancia do Kong
+    kong-migrations-bootstrap:
+        container_name: kong-migrations-bootstrap
+        image: kong:latest
+        command: "kong migrations bootstrap"
+        environment:
+            KONG_DATABASE: postgres
+            KONG_PG_HOST: kong-db
+            KONG_PG_USER: kong
+            KONG_PG_PASSWORD: kong
+        networks:
+            - backend
+        restart: on-failure
+        depends_on:
+            - kong-db
+
+    # API Gateway
+    kong:
+        container_name: kong
+        image: kong:latest
+        environment:
+            KONG_DATABASE: postgres
+            KONG_PG_HOST: kong-db
+            KONG_PG_USER: kong
+            KONG_PG_PASSWORD: kong
+            KONG_PROXY_ACCESS_LOG: /dev/stdout
+            KONG_ADMIN_ACCESS_LOG: /dev/stdout
+            KONG_PROXY_ERROR_LOG: /dev/stderr
+            KONG_ADMIN_ERROR_LOG: /dev/stderr
+            KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+        ports:
+            - "8000:8000"
+            - "8443:8443"
+            - "8001:8001"
+            - "8444:8444"
+        networks:
+            - backend
+        restart: on-failure
+        depends_on:
+            - kong-migrations-bootstrap
+
+    # API Gateway UI
+    konga:
+        container_name: konga
+        image: pantsel/konga
+        environment:
+            TOKEN_SECRET: kong
+            DB_ADAPTER: postgres
+            DB_HOST: kong-db
+            DB_PORT: 5432
+            DB_USER: kong
+            DB_PASSWORD: kong
+            DB_DATABASE: kong
+            DB_PG_SCHEMA: kong
+            NODE_ENV: development
+        ports:
+            - "1337:1337"
+        networks:
+            - backend
+        restart: always
+
+    # CLI  API Gateway
+    kong-restore:
+        container_name: kong-restore
+        image: kong/deck
+        networks:
+            - backend
+        command: "sync -s /tmp/kong.yaml --kong-addr http://kong:8001"
+        volumes:
+            - ./data/kong-db:/tmp    
+        depends_on: 
+            - kong
+        restart: on-failure
+
+########################################################
+
+################### Message Queue ######################
+    # Micro-serviço para Message Queue RabbitMQ
+    rabbitmq:        
+        container_name: rabbitmq
+        image: rabbitmq:3.8.14-management
+        ports:
+            - "15672:15672"
+            - "5672:5672"
+        networks:
+            - backend
+
+########################################################
+
+####################### Database #######################
+    # Bando de dados de autentucação
+    auth-db:
+        container_name: auth-db
+        image: mysql:8.0.23
+        cap_add:
+            - SYS_NICE 
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456789
+            MYSQL_DATABASE: auth-db
+        ports:
+            - "3306:3306"
+        networks:
+            - backend
+
+    # Bando de dados de suporte
+    support-db:
+        container_name: support-db
+        image: mysql:8.0.23
+        cap_add:
+            - SYS_NICE 
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456789
+            MYSQL_DATABASE: support-db
+        ports:
+            - "3307:3306"
+        networks:
+            - backend
+
+    # Bando de dados de produtos
+    product-details-db:
+        container_name: product-details-db
+        image: mysql:8.0.23
+        cap_add:
+            - SYS_NICE 
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456789
+            MYSQL_DATABASE: product-details-db
+        ports:
+            - "3308:3306"
+        networks:
+            - backend
+
+    # Bando de dados de apoio para restaurar os dados.
+    restore-db:
+        container_name: restore-db
+        image: mysql:8.0.23
+        cap_add:
+            - SYS_NICE 
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456789        
+        networks:
+            - backend
+        volumes:
+            - ./data:/tmp
+        depends_on: 
+            - auth-db
+            - support-db
+            - product-details-db
+        command: > 
+            sh -c "
+            sleep 120 &&
+            mysql --protocol=tcp --host=auth-db --port=3306 --user=root --password=123456789 --default-character-set=utf8  < /tmp/auth-db/auth-db.sql &&
+            mysql --protocol=tcp --host=support-db --port=3306 --user=root --password=123456789 --default-character-set=utf8  < /tmp/support-db/support-db.sql &&
+            mysql --protocol=tcp --host=product-details-db --port=3306 --user=root --password=123456789 --default-character-set=utf8  < /tmp/product-details-db/product-details-db.sql &&
+            exit
+            "
+        
+
+####################### Backend ########################
+    # Micro-serviço de autentucação 
+    auth:
+        container_name: auth
+        image: guirubio/6dvp-netflix-auth:v1.0.0
+        ports:
+            - "8090:8090"
+        environment:
+            #Variáveis para o MySQL 
+            DB_SERVER: auth-db
+            DB_PORT: 3306
+            DB_USERNAME: root
+            DB_PASSWORD: 123456789
+        networks:
+            - backend
+        depends_on: 
+            - auth-db
+            - restore-db
+        restart: on-failure
+
+    # Micro-serviço de suporte
+    support:
+        container_name: support
+        image: guirubio/6dvp-netflix-support:v1.0.0
+        ports:
+            - "8091:8091"
+        environment: 
+            #Variáveis para o MySQL
+            DB_SERVER: support-db
+            DB_PORT: 3306
+            DB_USERNAME: root
+            DB_PASSWORD: 123456789
+            #Variáveis para o RabbitMQ
+            MQ_SERVER: rabbitmq
+            MQ_PORT: 5672
+            MQ_USERNAME: guest
+            MQ_PASSWORD: guest
+        networks:
+            - backend
+        depends_on: 
+            - support-db
+            - restore-db
+            - rabbitmq
+        restart: on-failure
+
+    # Micro-serviço de produtos
+    product-details:
+        container_name: product-details
+        image: guirubio/6dvp-netflix-product-details:v1.0.0
+        ports:
+            - "8092:8092"
+        environment: 
+            #Variáveis para o MySQL
+            DB_SERVER: product-details-db
+            DB_PORT: 3306
+            DB_USERNAME: root
+            DB_PASSWORD: 123456789
+            #Variáveis para o RabbitMQ
+            MQ_SERVER: rabbitmq
+            MQ_PORT: 5672
+            MQ_USERNAME: guest
+            MQ_PASSWORD: guest
+        networks:
+            - backend
+        depends_on:
+            - product-details-db
+            - restore-db
+            - rabbitmq
+        restart: on-failure
+ 
+######################################################## 
+
+networks:
+    backend:
+        name: backend
+        driver: bridge

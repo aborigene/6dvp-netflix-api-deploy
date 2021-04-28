@@ -1,0 +1,140 @@
+_format_version: "1.1"
+services:
+- connect_timeout: 60000
+  host: auth
+  name: auth-addUser
+  path: /addUser
+  port: 8090
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  write_timeout: 60000
+  routes:
+  - name: addUser
+    paths:
+    - /addUser
+    path_handling: v1
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    strip_path: true
+    https_redirect_status_code: 426
+    request_buffering: true
+    response_buffering: true
+- connect_timeout: 60000
+  host: auth
+  name: auth-getUsers
+  path: /getUsers
+  port: 8090
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  write_timeout: 60000
+  routes:
+  - name: getUsers
+    paths:
+    - /getUsers
+    path_handling: v1
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    strip_path: true
+    https_redirect_status_code: 426
+    request_buffering: true
+    response_buffering: true
+- connect_timeout: 60000
+  host: auth
+  name: auth-login
+  path: /login
+  port: 8090
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  write_timeout: 60000
+  routes:
+  - name: login
+    paths:
+    - /login
+    path_handling: v1
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    strip_path: true
+    https_redirect_status_code: 426
+    request_buffering: true
+    response_buffering: true
+- connect_timeout: 60000
+  host: support
+  name: support-getAllTickets
+  path: /getAllTickets
+  port: 8091
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  write_timeout: 60000
+  routes:
+  - name: getAllTickets
+    paths:
+    - /getAllTickets
+    path_handling: v1
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    strip_path: true
+    https_redirect_status_code: 426
+    request_buffering: true
+    response_buffering: true
+- connect_timeout: 60000
+  host: support
+  name: support-getTicketsByStatus
+  path: /getTicketsByStatus
+  port: 8091
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  write_timeout: 60000
+  routes:
+  - name: getTicketsByStatus
+    paths:
+    - /getTicketsByStatus
+    path_handling: v1
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    strip_path: true
+    https_redirect_status_code: 426
+    request_buffering: true
+    response_buffering: true
+- connect_timeout: 60000
+  host: support
+  name: support-getTicketsByUser
+  path: /getTicketsByUser
+  port: 8091
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  write_timeout: 60000
+  routes:
+  - name: getTicketsByUser
+    paths:
+    - /getTicketsByUser
+    path_handling: v1
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    strip_path: true
+    https_redirect_status_code: 426
+    request_buffering: true
+    response_buffering: true
