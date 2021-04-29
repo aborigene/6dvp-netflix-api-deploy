@@ -177,7 +177,7 @@ services:
     # Micro-serviço de autentucação 
     auth:
         container_name: auth
-        image: guirubio/6dvp-netflix-auth:v1.0.0
+        image: guirubio/fiap-6dvp/netflix-auth:v1.0.0
         ports:
             - "8090:8090"
         environment:
@@ -196,7 +196,7 @@ services:
     # Micro-serviço de suporte
     support:
         container_name: support
-        image: guirubio/6dvp-netflix-support:v1.0.0
+        image: guirubio/fiap-6dvp/netflix-support:v1.0.0
         ports:
             - "8091:8091"
         environment: 
@@ -221,7 +221,7 @@ services:
     # Micro-serviço de produtos
     product-details:
         container_name: product-details
-        image: guirubio/6dvp-netflix-product-details:v1.0.0
+        image: guirubio/fiap-6dvp/netflix-product-details:v1.0.0
         ports:
             - "8092:8092"
         environment: 
