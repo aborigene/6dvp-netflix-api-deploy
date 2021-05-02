@@ -52,7 +52,7 @@ services:
             - "8444:8444"
         networks:
             - backend
-        restart: on-failure
+        restart: always
         depends_on:
             - ms-de-apoio-prepare-api-install
 
@@ -84,7 +84,7 @@ services:
             - backend
         command: "sync -s /tmp/kong.yaml --kong-addr http://api-gateway:8001"
         volumes:
-            - ./data/kong-db:/tmp    
+            - ./data/kong:/tmp    
         depends_on: 
             - api-gateway
         restart: on-failure
@@ -101,6 +101,7 @@ services:
             - "5672:5672"
         networks:
             - backend
+        restart: always
 
 ########################################################
 
@@ -118,6 +119,7 @@ services:
             - "3306:3306"
         networks:
             - backend
+        restart: always
 
     # Bando de dados de suporte
     support-db:
@@ -132,6 +134,7 @@ services:
             - "3307:3306"
         networks:
             - backend
+        restart: always
 
     # Bando de dados de produtos
     product-details-db:
@@ -146,6 +149,22 @@ services:
             - "3308:3306"
         networks:
             - backend
+        restart: always
+
+    # Bando de dados de produtos
+    user-details-db:
+        container_name: user-details-db
+        image: mysql:8.0.23
+        cap_add:
+            - SYS_NICE 
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456789
+            MYSQL_DATABASE: user-details-db
+        ports:
+            - "3309:3306"
+        networks:
+            - backend
+        restart: always
 
     # Bando de dados de apoio para restaurar os dados.
     ms-de-apoio-restore-db:
@@ -163,21 +182,23 @@ services:
             - auth-db
             - support-db
             - product-details-db
+            - user-details-db
         command: > 
             sh -c "
             sleep 120 &&
             mysql --protocol=tcp --host=auth-db --port=3306 --user=root --password=123456789 --default-character-set=utf8  < /tmp/auth-db/auth-db.sql &&
             mysql --protocol=tcp --host=support-db --port=3306 --user=root --password=123456789 --default-character-set=utf8  < /tmp/support-db/support-db.sql &&
             mysql --protocol=tcp --host=product-details-db --port=3306 --user=root --password=123456789 --default-character-set=utf8  < /tmp/product-details-db/product-details-db.sql &&
+            mysql --protocol=tcp --host=user-details-db --port=3306 --user=root --password=123456789 --default-character-set=utf8  < /tmp/user-details-db/user-details-db.sql &&
             exit
             "
-        
+        restart: on-failure      
 
 ####################### Backend ########################
     # Micro-serviço de autentucação 
     auth:
         container_name: auth
-        image: guirubio/fiap-6dvp/netflix-auth:v1.0.0
+        image: guirubio/fiap-6dvp-netflix-auth:v1.0.0
         ports:
             - "8090:8090"
         environment:
@@ -186,17 +207,23 @@ services:
             DB_PORT: 3306
             DB_USERNAME: root
             DB_PASSWORD: 123456789
+            #Variáveis para o RabbitMQ
+            MQ_SERVER: rabbitmq
+            MQ_PORT: 5672
+            MQ_USERNAME: guest
+            MQ_PASSWORD: guest
         networks:
             - backend
         depends_on: 
             - auth-db
             - ms-de-apoio-restore-db
-        restart: on-failure
+            - rabbitmq
+        restart: always
 
     # Micro-serviço de suporte
     support:
         container_name: support
-        image: guirubio/fiap-6dvp/netflix-support:v1.0.0
+        image: guirubio/fiap-6dvp-netflix-support:v1.0.0
         ports:
             - "8091:8091"
         environment: 
@@ -216,12 +243,12 @@ services:
             - support-db
             - ms-de-apoio-restore-db
             - rabbitmq
-        restart: on-failure
+        restart: always
 
     # Micro-serviço de produtos
     product-details:
         container_name: product-details
-        image: guirubio/fiap-6dvp/netflix-product-details:v1.0.0
+        image: guirubio/fiap-6dvp-netflix-product-details:v1.0.0
         ports:
             - "8092:8092"
         environment: 
@@ -241,7 +268,32 @@ services:
             - product-details-db
             - ms-de-apoio-restore-db
             - rabbitmq
-        restart: on-failure
+        restart: always
+
+    # Micro-serviço de usuários.
+    user-details:
+        container_name: user-details
+        image: guirubio/fiap-6dvp-netflix-user-details:v1.0.0
+        ports:
+            - "8093:8093"
+        environment: 
+            #Variáveis para o MySQL
+            DB_SERVER: user-details-db
+            DB_PORT: 3306
+            DB_USERNAME: root
+            DB_PASSWORD: 123456789
+            #Variáveis para o RabbitMQ
+            MQ_SERVER: rabbitmq
+            MQ_PORT: 5672
+            MQ_USERNAME: guest
+            MQ_PASSWORD: guest
+        networks:
+            - backend
+        depends_on:
+            - user-details-db
+            - ms-de-apoio-restore-db
+            - rabbitmq
+        restart: always
  
 ######################################################## 
 
