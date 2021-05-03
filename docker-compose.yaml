@@ -103,6 +103,11 @@ services:
         networks:
             - backend
         restart: always
+        links:
+            - user-details
+            - product-details
+            - support
+            - auth
 
 ########################################################
 
@@ -220,6 +225,8 @@ services:
             - ms-de-apoio-restore-db
             - rabbitmq
         restart: always
+        links: 
+            - rabbitmq
 
     # Micro-serviço de suporte
     support:
@@ -245,6 +252,8 @@ services:
             - ms-de-apoio-restore-db
             - rabbitmq
         restart: always
+        links: 
+            - rabbitmq
 
     # Micro-serviço de produtos
     product-details:
@@ -270,6 +279,8 @@ services:
             - ms-de-apoio-restore-db
             - rabbitmq
         restart: always
+        links: 
+            - rabbitmq
 
     # Micro-serviço de usuários.
     user-details:
@@ -295,6 +306,8 @@ services:
             - ms-de-apoio-restore-db
             - rabbitmq
         restart: always
+        links: 
+            - rabbitmq
  
 ######################################################## 
 
