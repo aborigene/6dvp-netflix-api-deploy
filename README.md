@@ -74,3 +74,15 @@ Os micro serviços de apoio deveram ser desligados automáticamente, indicando q
 /swagger-ui-products - Documentação das APIs<br>
 /swagger-ui-auth - Documentação das APIs<br>
 /swagger-ui-user-details - Documentação das APIs<br>
+
+## Portas de execução
+
+<b>Portas de execução</b><br>
+<br>
+Kong-API: 8000<br>
+Auth: 8090<br>
+Support: 8091<br>
+Product: 8092<br>
+User: 8093<br>
+RabbitMQ: 5672<br>
+RabbitMQ Management: 15672<br>
