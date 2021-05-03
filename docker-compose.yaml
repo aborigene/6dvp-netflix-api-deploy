@@ -103,6 +103,8 @@ services:
         networks:
             - backend
         restart: on-failure
+        volumes:
+            - ./data/rabbitmq/myrabbit.conf:/etc/rabbitmq/rabbitmq.config
 
 
 ########################################################
