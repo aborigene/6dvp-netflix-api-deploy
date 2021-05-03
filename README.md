@@ -1,40 +1,45 @@
 # O que é esse repositório?
 
-Aqui ficam os arquivos terraform para o deploy de toda a plataforma de APIs. Será feito todo o deploy no K8S deixando a API pronta para uso.
+Aqui ficam os arquivos necessários para executar o docker-compose para o deploy de toda a plataforma de APIs.
 
-## Status
+## Pré requisitos.
 
-Nesse momento somente os serviços abaixo estão configurados:
+Docker: https://docs.docker.com/engine/install/
+Docker Compose: https://docs.docker.com/compose/install/
+Git: https://git-scm.com/book/pt-br/v2/Come%C3%A7ando-Instalando-o-Git
 
-product-details
-auth
-auth-db
-user-details
+## Como usar esse repositório.
 
-## Como usar esse repositório
+1. Clonar o repositório
+git clone https://github.com/aborigene/6dvp-netflix-api-deploy.git
 
-1. Executar os comandos terraform, como abaixo
+2. Entrar na pasta do projeto e executar o docker-compose
+docker-compose up -d
 
-```
-cd <raiz_repositorio>
-terraform init
-terraform plan
-terraform apply --auto-aprove
-```
+# Sobre o projeto:
 
-Será usada a configuração de acesso do Kubernetes configurada localmente.
+O Projeto está segmentado em 15 micro serviços, sendo que 3 são de apoio (restore de dados)
 
-Os arquivos estão configurados para baixar as imagens do repoistório projeto no Docker Hub, para construir o serviços e usar suas próprias imagens basta rodar o maven de cada serviço do projeto e atualizar os valores das imagens no arquivo terraform.
+1. api-gateway
+2. api-gateway-db
+3. api-gateway-ui
+4. auth
+5. auth-db
+6. ms-de-apoio-prepare-api-install
+7. ms-de-apoio-restore-api-db
+8. ms-de-apoio-restore-db    
+9. product-details           
+10. product-details-db        
+11. rabbitmq
+12. support 
+13. support-db
+14. user-details
+15. user-details-db
 
-## Requisitos e recomendações
+Os micro serviços de apoio deveram ser desligados automáticamente, indicando que o deploy foi finalizado.
 
-1. Um cluster K8S funcionando e para o qual se tenha acesso
-2. Recomendamos para testes o uso do minikube, basta instalar e configurar o minikube que o deploy será feito a este ambiente corretamente usando os arquivos destes repositório
-3. Para acessar os serviços é necessária a configuração de LoadBalancers, Port Forwarding ou Tunnel. Por favor verificar a documentação do ambiente onde está sendo feito o deploy, para a melhor opção a ser usada.
-4. Por exemplo, no caso do Minikube e o serviço product-details basta executar o comando abaixo, que irá garantir o acesso ao serviço através da porta local 8080. Caso esta porta já esteja em uso, ajustar o comando para uma porta que esteja disponível.
-5. Necessário terraform instalado localmente para execução do deploy.
-6. Para acessar os serviços será necessário fazer o port forward se estiver sendo usado o minikube, exemplo de comando abaixo.
+6. ms-de-apoio-prepare-api-install
+7. ms-de-apoio-restore-api-db
+8. ms-de-apoio-restore-db 
 
-```
-kubectl port-forward service/dvp6-netflix-product-details 8080:8083 -n dvp6-netflix-product-details
-```
+# Topologia do projeto:
