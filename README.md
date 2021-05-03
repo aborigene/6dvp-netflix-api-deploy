@@ -4,9 +4,9 @@ Aqui ficam os arquivos necessários para executar o docker-compose para o deploy
 
 ## Pré requisitos.
 
-Docker: https://docs.docker.com/engine/install/
-Docker Compose: https://docs.docker.com/compose/install/
-Git: https://git-scm.com/book/pt-br/v2/Come%C3%A7ando-Instalando-o-Git
+1. Docker: https://docs.docker.com/engine/install/
+2. Docker Compose: https://docs.docker.com/compose/install/
+3. Git: https://git-scm.com/book/pt-br/v2/Come%C3%A7ando-Instalando-o-Git
 
 ## Como usar esse repositório.
 
