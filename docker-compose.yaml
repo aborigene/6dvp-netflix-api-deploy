@@ -103,11 +103,7 @@ services:
         networks:
             - backend
         restart: always
-        links:
-            - user-details
-            - product-details
-            - support
-            - auth
+
 
 ########################################################
 
