@@ -4,9 +4,10 @@ Aqui ficam os arquivos necessários para executar o docker-compose para o deploy
 
 ## Pré requisitos.
 
-1. Docker: https://docs.docker.com/engine/install/
-2. Docker Compose: https://docs.docker.com/compose/install/
-3. Git: https://git-scm.com/book/pt-br/v2/Come%C3%A7ando-Instalando-o-Git
+1. Git: https://git-scm.com/book/pt-br/v2/Come%C3%A7ando-Instalando-o-Git
+2. Docker: https://docs.docker.com/engine/install/
+3. Docker Compose: https://docs.docker.com/compose/install/
+
 
 ## Como usar esse repositório.
 
@@ -71,7 +72,7 @@ Os micro serviços de apoio deveram ser desligados automáticamente, indicando q
 <br>
 <b>Documentação dos endpoint</b> obs.: as APIs de documentação não estão expostas no API Gateway, devem ser acessadas diretamente nos micro-serviços<br>
 /swagger-ui-support - Documentação das APIs<br>
-/swagger-ui-products - Documentação das APIs<br>
+/swagger-ui-product-details - Documentação das APIs<br>
 /swagger-ui-auth - Documentação das APIs<br>
 /swagger-ui-user-details - Documentação das APIs<br>
 
