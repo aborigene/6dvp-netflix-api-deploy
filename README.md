@@ -48,29 +48,29 @@ Os micro serviços de apoio deveram ser desligados automáticamente, indicando q
 
 ## APIs
 
-<p>Endpoints - Login</p>
-<p>/login - Valida usuário e retorna um JWT</p>
-<p></p>
-<p>Endpoints - Usuários</p>
-<p>/setFavorities - Adiciona titulo na lista de favoritos</p>
-<p>/setLike - Marcar o filme como gostei</p>
-<p>/setDislike - Marca o filme como não gostei</p>
-<p>/openTicket - Abre um ticket no suporte</p>
-<p>/getUsers - Retorna lista com todos os usuários</p>
-<p>/addUser - Adiciona um novo usuário</p>
-<p></p>
-<p>Endpoints - Filmes</p>
-<p>/getMoviesByGenre - Retorna lista de filmes por genero</p>
-<p>/getMovie - Retorna um filme específico</p>
-<p>/getAllMovies - Retorna lista com todos os filmes</p>
-<p></p>
-<p>Endpoint - Suporte</p>
-<p>/getAllTickets - Retorna lista com todos os chamados</p>
-<p>/getTicketsByUser - Retorna lista com todos os chamados por usuário</p>
-<p>/getTicketsByStatus - Retorna lista com todos os chamados por status</p>
-<p></p>
-<p>Documentação dos endpoint</p>
-<p>/swagger-ui-support - Documentação das APIs</p>
-<p>/swagger-ui-products - Documentação das APIs</p>
-<p>/swagger-ui-auth - Documentação das APIs</p>
-<p>/swagger-ui-user-details - Documentação das APIs</p>
+<b>Endpoints - Login</b><br>
+/login - Valida usuário e retorna um JWT<br>
+<br>
+<b>Endpoints - Usuários</b><br>
+/setFavorities - Adiciona titulo na lista de favoritos<br>
+/setLike - Marcar o filme como gostei<br>
+/setDislike - Marca o filme como não gostei<br>
+/openTicket - Abre um ticket no suporte<br>
+/getUsers - Retorna lista com todos os usuários<br>
+/addUser - Adiciona um novo usuário<br>
+<br>
+<b>Endpoints - Filmes</b><br>
+/getMoviesByGenre - Retorna lista de filmes por genero<br>
+/getMovie - Retorna um filme específico<br>
+/getAllMovies - Retorna lista com todos os filmes<br>
+<br>
+<b>Endpoint - Suporte</b><br>
+/getAllTickets - Retorna lista com todos os chamados<br>
+/getTicketsByUser - Retorna lista com todos os chamados por usuário<br>
+/getTicketsByStatus - Retorna lista com todos os chamados por status<br>
+<br>
+<b>Documentação dos endpoint</b><br>
+/swagger-ui-support - Documentação das APIs<br>
+/swagger-ui-products - Documentação das APIs<br>
+/swagger-ui-auth - Documentação das APIs<br>
+/swagger-ui-user-details - Documentação das APIs<br>
