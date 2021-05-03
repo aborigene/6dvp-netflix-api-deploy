@@ -43,3 +43,5 @@ Os micro serviços de apoio deveram ser desligados automáticamente, indicando q
 8. ms-de-apoio-restore-db 
 
 # Topologia do projeto:
+
+<img src="https://readme-image.s3.amazonaws.com/6dvp-netflix.jpg" alt="topologia"/>
