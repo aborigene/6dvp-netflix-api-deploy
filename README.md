@@ -86,3 +86,11 @@ Product: 8092<br>
 User: 8093<br>
 RabbitMQ: 5672<br>
 RabbitMQ Management: 15672<br>
+
+## GitHub
+
+1. Auth - https://github.com/aborigene/6dvp-netflix-auth
+2. User -https://github.com/aborigene/6dvp-netflix-user-details
+3. Support - https://github.com/aborigene/6dvp-netflix-support
+4. Product - https://github.com/aborigene/6dvp-netflix-product-details
+
