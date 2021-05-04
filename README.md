@@ -14,8 +14,8 @@ Aqui ficam os arquivos necessários para executar o docker-compose para o deploy
 1. Clonar o repositório
 git clone https://github.com/aborigene/6dvp-netflix-api-deploy.git
 
-2. Entrar na pasta do projeto e executar o docker-compose
-docker-compose up -d
+2. Entrar na pasta do projeto e executar o docker-compose<br>
+docker-compose up -d<br>
 
 ## Sobre o projeto:
 
