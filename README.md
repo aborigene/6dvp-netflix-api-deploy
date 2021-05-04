@@ -79,13 +79,16 @@ Os micro serviços de apoio deveram ser desligados automáticamente, indicando q
 ## Acesso
 
 <b>Portas</b><br>
-Kong-API: 8000<br>
-Auth: 8090<br>
-Support: 8091<br>
-Product: 8092<br>
-User: 8093<br>
-RabbitMQ: 5672<br>
-RabbitMQ Management: 15672<br>
+kong-api: 8000<br>
+auth: 8090<br>
+auth-db: 3306<br>
+support: 8091<br>
+support-db: 3307<br>
+product-details: 8092<br>
+product-details-db: 3308<br>
+user-details: 8093<br>
+user-db: 3309<br>
+rabbitmq: 5672/15672<br>
 
 ## GitHub
 
